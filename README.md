@@ -18,4 +18,5 @@
 ```
 
 Password generator + manager built in Python with Tkinter
+
 So far it can only generate passwords and copy to clipboard
