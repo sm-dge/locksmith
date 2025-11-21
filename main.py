@@ -36,7 +36,7 @@ def pass_gen():
     global passgen
     passgen = Tk()
     passgen.title('LockSmith PassGen')
-    passgen.geometry('350x150')
+    passgen.geometry('350x175')
     passgen.resizable(False, False)
 
     ttk.Label(passgen, text="Password Generator", font=("Arial", 16)).pack()
@@ -44,9 +44,9 @@ def pass_gen():
     pass_label = ttk.Label(passgen, text="")
     pass_label.pack()
     ttk.Button(passgen, text="Copy to Clipboard", command=copy_to_clipboard).pack()
-    ttk.Button(passgen, text="Back", command=lambda: passgen.destroy()).pack()
+    ttk.Label(passgen, text='Test Ctrl+V:').pack()
+    ttk.Entry(passgen, width=50).pack()
+    ttk.Button(passgen, text="Exit", command=passgen.destroy).pack()
 
     passgen.mainloop()
 pass_gen()
-
-
