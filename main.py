@@ -4,20 +4,53 @@ from random import choice
 from string import digits, punctuation
 import pandas as pd
 from pathlib import Path
+from cryptography.fernet import Fernet
 
+# Creates a blank password string
 pw = ''
+# saves the filepaths of all relevant files
 words_list = Path(__file__).with_name('words.txt')
 saved_list = Path(__file__).with_name('saved.csv')
 readme = Path(__file__).with_name('README.txt')
+saved_key = Path(__file__).with_name('filekey.key')
 words = open(words_list, "r").readlines()
 # Remove newline characters from each word
 words = [word.strip() for word in words]
+
+# Creates a new key if one does not exist
+while True:
+    try:
+        with open(saved_key, 'rb') as f:
+            key = f.read()
+        fernet = Fernet(key)
+        break
+    except:
+        key = Fernet.generate_key()
+        with open(saved_key, 'wb') as f:
+            f.write(key)
+
+def decrypt():
+    with open(saved_list, 'rb') as f:
+        encrypted = f.read()
+
+    decrypted = fernet.decrypt(encrypted)
+
+    with open(saved_list, 'wb') as f:
+        f.write(decrypted)
+
+def encrypt():
+    with open(saved_list, 'rb') as f:
+        original = f.read()
+    encrypted = fernet.encrypt(original)
+    with open(saved_list, 'wb') as f:
+        f.write(encrypted)
 
 try:
     open(saved_list, 'r')
 except:
     with open(saved_list, 'w') as f:
         f.write('application,password')
+    encrypt()
 
 def new_pass():
     global pw
@@ -59,6 +92,7 @@ def pass_gen():
     passgen.mainloop()
 
 def save_pass():
+    decrypt()
     df = pd.read_csv(saved_list)
     application = app_entry.get()
     password = pass_entry.get()
@@ -83,9 +117,11 @@ def save_pass():
         df = pd.concat([df, new_row], ignore_index=True)
         df.to_csv(saved_list, index=False)
         messagebox.showinfo("Saved", f"Password for '{application}' saved.")
+    encrypt()
       
 
 def get_pass():
+    decrypt()
     df = pd.read_csv(saved_list)
     application = app_entry.get()
     try:
@@ -93,9 +129,11 @@ def get_pass():
         messagebox.showinfo("Your Password", f"Password for '{application}' is '{stored_password}'.")
     except:
         messagebox.showerror('Error', 'No password found for this application!')
+    encrypt()
 
 
 def del_pass():
+    decrypt()
     df = pd.read_csv(saved_list)
     application = app_entry.get()
     password = pass_entry.get()
@@ -115,6 +153,7 @@ def del_pass():
                 messagebox.showinfo("Deleted", f"Password for '{application}' has been deleted.")
             else:
                 messagebox.showinfo("Cancelled", "Password deletion cancelled.")
+    encrypt()
 
 def help():
     help_window = Toplevel(root)

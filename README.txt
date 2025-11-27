@@ -3,6 +3,9 @@
 ABOUT
 LockSmith is a lightweight, offline and easy to use tool that lets
 you generate and store passwords for all of your accounts.
+When using the program for the first time, a file for the saved 
+passwords along with an encryption key will be generated. DO NOT
+delete these files.
 
 SAVE PASSWORD
 To save a password, you must enter the name of an application and 
