@@ -116,27 +116,41 @@ def save_pass():
     password = pass_entry.get()
 # Checks both fields have an input
     if application == '' or password == '':
+        encrypt()
         messagebox.showerror('Error', 'An application name and password is required before saving!')
+        decrypt()
 # Checks application exists in saved.csv
     elif application in df['application'].values:
+        encrypt()
         overwrite = messagebox.askyesno("Overwrite?", f"Password for '{application}' already exists! Would you like to overwrite this password?")
+        decrypt()
         if overwrite:
+            encrypt()
             confirm = messagebox.askyesno("Overwrite?",f"Are you sure you wish to overwrite the password for '{application}'?")
+            decrypt()
 # Overwrites existing password 
             if confirm:
                 df.loc[df['application'] == application, 'password'] = password
                 df.to_csv(saved_list, index=False)
+                encrypt()
                 messagebox.showinfo("Overwrite Successful", f"Password for '{application}' overwritten.")
+                decrypt()
             else:
+                encrypt()
                 messagebox.showinfo("Overwrite Cancelled", "Password was not changed.")
+                decrypt()
         else:
+            encrypt()
             messagebox.showinfo("Overwrite Cancelled", "Password was not changed.")
+            decrypt()
     else:
 # Saves new password
         new_row = pd.DataFrame([[application, password]], columns=['application', 'password'])
         df = pd.concat([df, new_row], ignore_index=True)
         df.to_csv(saved_list, index=False)
+        encrypt()
         messagebox.showinfo("Saved", f"Password for '{application}' saved.")
+        decrypt()
     encrypt()
       
 # Displays existing password from saved.csv to user
@@ -147,10 +161,14 @@ def get_pass():
 # Displays password if application input exists in saved.csv
     try:
         stored_password = df.loc[df['application'] == application, 'password'].values[0]
+        encrypt()
         messagebox.showinfo("Your Password", f"Password for '{application}' is '{stored_password}'.")
+        decrypt()
 # Error if application does not exist
     except:
+        encrypt()
         messagebox.showerror('Error', 'No password found for this application!')
+        decrypt()
     encrypt()
 
 # Deletes a password from saved.csv
@@ -161,23 +179,35 @@ def del_pass():
     password = pass_entry.get()
 # Checks  both fields have an input
     if application == '' or password == '':
+        encrypt()
         messagebox.showerror('Error', 'An application name and password is required to delete passwords!')
+        decrypt()
     elif application not in df['application'].values:
+        encrypt()
         messagebox.showerror('Error', f"No password found for '{application}'!")
+        decrypt()
 # Checks input password matches saved password 
     else:
         stored_password = df.loc[df['application'] == application, 'password'].values[0]
         if password != stored_password:
+            encrypt()
             messagebox.showerror('Error', f"Password input does not match stored password for '{application}'!")
+            decrypt()
         else:
+            encrypt()
             confirm = messagebox.askyesno("Delete?",f"Are you sure you wish to delete the password for '{application}'?")
+            decrypt()
 # Deletes application and password
             if confirm:
                 df = df[df['application'] != application]
                 df.to_csv(saved_list, index=False)
+                encrypt()
                 messagebox.showinfo("Deleted", f"Password for '{application}' has been deleted.")
+                decrypt()
             else:
+                encrypt()
                 messagebox.showinfo("Cancelled", "Password deletion cancelled.")
+                decrypt()
     encrypt()
 
 # Window to display contents of  README.txt to user
@@ -208,7 +238,7 @@ def toggle_password():
     elif pass_entry.cget('show') == '':
         pass_entry.config(show='*')
         toggle_button.config(text='Show Password')
-# If show is *, pressing the button will make it blanl, and change the text of the button to Hide Password
+# If show is *, pressing the button will make it blank, and change the text of the button to Hide Password
     else:
         pass_entry.config(show='')
         toggle_button.config(text='Hide Password')
